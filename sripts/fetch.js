@@ -1,3 +1,5 @@
+//const { default: axios } = require("axios");
+
 // API to obtain data 
 const api = 'https://reqres.in/api/users?delay=2'
 
@@ -33,7 +35,8 @@ function readUser() {
     const user = JSON.parse(localStorage.getItem("userData"));
     user && user.time > Date.now() ?
         displayUsers(user.usersData) :
-        fetchRequest();
+        //fetchRequest();
+        axiosRequest();
 }
 
 // Fetch function to obtain data from API 
@@ -52,6 +55,26 @@ function fetchRequest() {
             btn();
         })
     //setTimeout(() => btn(), 2400);
+}
+
+function axiosRequest() {
+    spiner(); //Aparece la imagen de spinner para la espera
+    axios({
+    method: 'get',
+    url: api,
+    })
+    .then(function (response) {
+        console.log(response);
+        console.log("status code: " + response.status);
+        usersToLocalStorage(response.data.data);
+        displayUsers(response.data.data);
+    })
+    .catch(error => {
+        console.log(error);
+    })
+    .finally( () =>{
+        btn();
+    });
 }
 
 // Saving data function to save data to local storage 
